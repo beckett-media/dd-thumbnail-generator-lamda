@@ -61,6 +61,9 @@ exports.handler = async (event, context) => {
   console.log("2");
 
   const imgMetadata = await sharp(origimage.Body).metadata();
+
+  console.log("3");
+
   const scalingFactor = Math.min(
       1,
       THUMB_WIDTH / imgMetadata.width,
@@ -69,6 +72,8 @@ exports.handler = async (event, context) => {
     width = scalingFactor * imgMetadata.width,
     height = scalingFactor * imgMetadata.height;
   // Use the Sharp module to resize the image and save in a buffer.
+  console.log("4");
+  
   try {
     var buffer = await sharp(origimage.Body)
       .resize({ width, height })
@@ -80,7 +85,7 @@ exports.handler = async (event, context) => {
     return;
   }
 
-  console.log("3");
+  console.log("6");
 
   // Upload the thumbnail image to the destination bucket
   try {
