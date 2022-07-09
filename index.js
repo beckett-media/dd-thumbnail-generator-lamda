@@ -60,7 +60,7 @@ exports.handler = async (event, context) => {
 
   console.log("2");
 
-  const imgMetadata = await sharp(origimage).metadata();
+  const imgMetadata = await sharp(origimage.Body).metadata();
   const scalingFactor = Math.min(
       1,
       THUMB_WIDTH / imgMetadata.width,
