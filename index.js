@@ -2,20 +2,12 @@
 const AWS = require("aws-sdk");
 const util = require("util");
 const sharp = require("sharp");
-const path = require("path");
-const dotenv = require("dotenv");
-
-dotenv.config({
-  path: path.join(__dirname, `${process.env.NODE_ENV}.env`),
-});
-
-console.log(path.join(__dirname, `${process.env.NODE_ENV}.env`));
 
 const s3 = new AWS.S3({
-  region: process.env.AWS_REGION,
-  accessKeyId: process.env.AWS_REGION,
-  secretAccessKey: process.env.AWS_REGION,
-  signatureVersion: process.env.AWS_REGION,
+  region: process.env.AWS_GLOBAL_REGION,
+  accessKeyId: process.env.ACCESS_KEY_ID,
+  secretAccessKey: process.env.ACCESS_KEY_SECRET,
+  signatureVersion: process.env.SIGNATURE_VERSION,
 });
 
 const THUMB_WIDTH = 600;
@@ -63,8 +55,8 @@ exports.handler = async (event, context) => {
   }
 
   // set thumbnail width.
+  const imgMetadata = await sharp(origimage.Body).metadata();
 
-  const imgMetadata = await sharp(origimage).metadata();
   const scalingFactor = Math.min(
       1,
       THUMB_WIDTH / imgMetadata.width,
@@ -78,6 +70,8 @@ exports.handler = async (event, context) => {
       .resize({ width, height })
       .toBuffer();
   } catch (error) {
+    console.log("Converting to buffer error");
+
     console.log(error);
     return;
   }
@@ -92,6 +86,7 @@ exports.handler = async (event, context) => {
     };
     await s3.putObject(destparams).promise();
   } catch (error) {
+    console.log("Error during upload");
     console.log(error);
     return;
   }
