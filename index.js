@@ -2,15 +2,22 @@
 const AWS = require("aws-sdk");
 const util = require("util");
 const sharp = require("sharp");
+const path = require("path");
+const dotenv = require("dotenv");
 
-// get reference to S3 client
-const s3 = new AWS.S3({
-  region: "us-east-1",
-  accessKeyId: "AKIA2UG7D5EPCSPKMPMB",
-  secretAccessKey: "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",
-  signatureVersion: "v4",
+dotenv.config({
+  path: path.join(__dirname, `${process.env.NODE_ENV}.env`),
 });
-const destinationBucket = `due-dilly-mobile-thumbnail-dev`;
+
+console.log(path.join(__dirname, `${process.env.NODE_ENV}.env`));
+
+const s3 = new AWS.S3({
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_REGION,
+  secretAccessKey: process.env.AWS_REGION,
+  signatureVersion: process.env.AWS_REGION,
+});
+
 const THUMB_WIDTH = 600;
 const THUMB_HEIGHT = 600;
 
@@ -78,7 +85,7 @@ exports.handler = async (event, context) => {
   // Upload the thumbnail image to the destination bucket
   try {
     const destparams = {
-      Bucket: destinationBucket,
+      Bucket: process.env.DESTINATION_BUCKET,
       Key: dstKey,
       Body: buffer,
       ContentType: "image",
