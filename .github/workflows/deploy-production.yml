@@ -22,7 +22,7 @@ jobs:
       - name: npm install
         env:
           CI: true
-          NODE_ENV: development
+          NODE_ENV: production
         run: |
           npm ci
       - name: deploy
