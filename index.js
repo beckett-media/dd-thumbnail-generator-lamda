@@ -42,8 +42,6 @@ exports.handler = async (event, context) => {
 
   // Download the image from the S3 source bucket.
 
-  console.log("1");
-
   try {
     const params = {
       Bucket: srcBucket,
@@ -57,12 +55,7 @@ exports.handler = async (event, context) => {
   }
 
   // set thumbnail width.
-
-  console.log("2");
-
   const imgMetadata = await sharp(origimage.Body).metadata();
-
-  console.log("3");
 
   const scalingFactor = Math.min(
       1,
@@ -72,8 +65,6 @@ exports.handler = async (event, context) => {
     width = scalingFactor * imgMetadata.width,
     height = scalingFactor * imgMetadata.height;
   // Use the Sharp module to resize the image and save in a buffer.
-  console.log("4");
-  
   try {
     var buffer = await sharp(origimage.Body)
       .resize({ width, height })
@@ -84,8 +75,6 @@ exports.handler = async (event, context) => {
     console.log(error);
     return;
   }
-
-  console.log("6");
 
   // Upload the thumbnail image to the destination bucket
   try {
@@ -98,7 +87,6 @@ exports.handler = async (event, context) => {
     await s3.putObject(destparams).promise();
   } catch (error) {
     console.log("Error during upload");
-
     console.log(error);
     return;
   }
